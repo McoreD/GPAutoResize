@@ -58,16 +58,7 @@ namespace GPAR
                 return;
             }
 
-            ResizePhotosInFolderAsync(settings.PhotosLocation);
-        }
-
-        private static void ResizePhotosInFolderAsync(string folderPath)
-        {
-            Thread thread = new Thread(() =>
-            {
-                ResizePhotosInFolder(folderPath);
-            });
-            thread.Start();
+            ResizePhotosInFolder(settings.PhotosLocation);
         }
 
         private static void ResizePhotosInFolder(string folderPath)
@@ -78,40 +69,47 @@ namespace GPAR
 
             Parallel.ForEach(files, filePath =>
             {
-                using (Image img = Image.FromFile(filePath))
+                try
                 {
-                    if ((img.Width > settings.MaximumPixels || img.Height > settings.MaximumPixels) && settings.BackupOriginalFiles)
+                    using (Image img = Image.FromFile(filePath))
                     {
-                        string newPath = filePath.Replace(settings.PhotosLocation, settings.BackupLocation);
-                        Helpers.CreateDirectoryIfNotExist(newPath);
-                        File.Copy(filePath, newPath);
-                    }
-
-                    if (img.Width > img.Height && img.Width > settings.MaximumPixels)
-                    {
-                        float perc = (float)settings.MaximumPixels / (float)img.Width * 100;
-
-                        using (Image img2 = ImageHelpers.ResizeImageByPercentage(img, perc))
+                        if ((img.Width > settings.MaximumPixels || img.Height > settings.MaximumPixels) && settings.BackupOriginalFiles)
                         {
-                            img2.SaveJPG(filePath, settings.PhotoQuality);
-                            Console.WriteLine("Resized {0} on thread {1}", Path.GetFileName(filePath), Thread.CurrentThread.ManagedThreadId);
+                            string newPath = filePath.Replace(settings.PhotosLocation, settings.BackupLocation);
+                            Helpers.CreateDirectoryIfNotExist(newPath);
+                            if (!File.Exists(newPath)) File.Copy(filePath, newPath);
+                        }
+
+                        if (img.Width > img.Height && img.Width > settings.MaximumPixels)
+                        {
+                            float perc = (float)settings.MaximumPixels / (float)img.Width * 100;
+
+                            using (Image img2 = ImageHelpers.ResizeImageByPercentage(img, perc))
+                            {
+                                img2.SaveJPG(filePath, settings.PhotoQuality);
+                                Console.WriteLine("Resized {0} on thread {1}", Path.GetFileName(filePath), Thread.CurrentThread.ManagedThreadId);
+                            }
+                        }
+                        else if (img.Height > settings.MaximumPixels)
+                        {
+                            float perc = (float)settings.MaximumPixels / (float)img.Height * 100;
+
+                            using (Image img2 = ImageHelpers.ResizeImageByPercentage(img, perc))
+                            {
+                                img2.SaveJPG(filePath, settings.PhotoQuality);
+                                Console.WriteLine("Resized {0} on thread {1}", Path.GetFileName(filePath), Thread.CurrentThread.ManagedThreadId);
+                            }
                         }
                     }
-                    else if (img.Height > settings.MaximumPixels)
-                    {
-                        float perc = (float)settings.MaximumPixels / (float)img.Height * 100;
-
-                        using (Image img2 = ImageHelpers.ResizeImageByPercentage(img, perc))
-                        {
-                            img2.SaveJPG(filePath, settings.PhotoQuality);
-                            Console.WriteLine("Resized {0} on thread {1}", Path.GetFileName(filePath), Thread.CurrentThread.ManagedThreadId);
-                        }
-                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
                 }
             });
 
             if (settings.IncludeSubfolders)
-                Directory.GetDirectories(folderPath).ForEach(ResizePhotosInFolderAsync);
+                Directory.GetDirectories(folderPath).ForEach(ResizePhotosInFolder);
         }
     }
 }
