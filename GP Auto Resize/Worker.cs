@@ -1,10 +1,10 @@
 ﻿#region License Information (GPL v3)
 
 /*
-    Google+ Auto Resize - A program that allows you to resize photos larger than 
+    Google+ Auto Resize - A program that allows you to resize photos larger than
     2048 pixels (by default) in width or height so that it does not count towards
     your Google Drive storage.
-    
+
     Copyright (C) 2015 ShareX Developers
 
     This program is free software; you can redistribute it and/or
@@ -74,7 +74,7 @@ namespace GPAR
         {
             List<string> files = new List<string>();
 
-            settings.ImageExtensions.ForEach(ext => files.AddRange(Directory.GetFiles(folderPath, "*." + ext)));
+            settings.ImageExtensions.ForEach(ext => files.AddRange(Directory.GetFiles(folderPath, "*." + ext).Where(fp => !Regex.IsMatch(fp, settings.ExcludeFilesWithWord, RegexOptions.IgnoreCase))));
 
             Parallel.ForEach(files, filePath =>
             {
