@@ -91,7 +91,12 @@ namespace GPAR
 
             SearchOption searchOption = settings.IncludeSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
 
-            settings.ImageExtensions.ForEach(ext => files.AddRange(Directory.GetFiles(folderPath, "*." + ext, searchOption).Where(x => !x.Contains(settings.ExcludeFilesWithWord))));
+            settings.ImageExtensions.ForEach(ext => files.AddRange(Directory.GetFiles(folderPath, "*." + ext, searchOption)));
+
+            if (!string.IsNullOrEmpty(settings.ExcludeFilesWithWord))
+            {
+                files = files.Where(x => !x.Contains(settings.ExcludeFilesWithWord)).ToList();
+            }
 
             int current = 0;
             int max = files.Count;
