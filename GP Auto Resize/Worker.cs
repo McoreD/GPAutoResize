@@ -31,9 +31,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -42,10 +39,21 @@ namespace GPAR
 {
     public class Worker
     {
-        private static Settings settings = Program.Settings;
+        public bool IsWorking { get; private set; }
 
-        public static void Start()
+        public delegate void ProgressEventHandler(int current, int max);
+
+        public event ProgressEventHandler ProgressChanged;
+
+        private readonly Settings settings = Program.Settings;
+        private object progressLock = new object();
+
+        public void Start()
         {
+            if (IsWorking) return;
+
+            IsWorking = true;
+
             if (!Directory.Exists(settings.PhotosLocation))
             {
                 MessageBox.Show("Photos location is not configured.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -59,13 +67,30 @@ namespace GPAR
             }
 
             ResizePhotosInFolder(settings.PhotosLocation);
+
+            IsWorking = false;
         }
 
-        private static void ResizePhotosInFolder(string folderPath)
+        protected void OnProgressChanged(int current, int max)
+        {
+            if (ProgressChanged != null)
+            {
+                ProgressChanged(current, max);
+            }
+        }
+
+        private void ResizePhotosInFolder(string folderPath)
         {
             List<string> files = new List<string>();
 
-            settings.ImageExtensions.ForEach(ext => files.AddRange(Directory.GetFiles(folderPath, "*." + ext).Where(fp => !Regex.IsMatch(fp, settings.ExcludeFilesWithWord, RegexOptions.IgnoreCase))));
+            SearchOption searchOption = settings.IncludeSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+
+            settings.ImageExtensions.ForEach(ext => files.AddRange(Directory.GetFiles(folderPath, "*." + ext, searchOption)));
+
+            int current = 0;
+            int max = files.Count;
+
+            OnProgressChanged(current, max);
 
             Parallel.ForEach(files, filePath =>
             {
@@ -80,26 +105,32 @@ namespace GPAR
                             if (!File.Exists(newPath)) File.Copy(filePath, newPath);
                         }
 
+                        float perc;
+
                         if (img.Width > img.Height && img.Width > settings.MaximumPixels)
                         {
-                            float perc = (float)settings.MaximumPixels / (float)img.Width * 100;
-
-                            using (Image img2 = ImageHelpers.ResizeImageByPercentage(img, perc))
-                            {
-                                img2.SaveJPG(filePath, settings.PhotoQuality);
-                                Console.WriteLine("Resized {0} on thread {1}", Path.GetFileName(filePath), Thread.CurrentThread.ManagedThreadId);
-                            }
+                            perc = (float)settings.MaximumPixels / img.Width * 100;
                         }
                         else if (img.Height > settings.MaximumPixels)
                         {
-                            float perc = (float)settings.MaximumPixels / (float)img.Height * 100;
-
-                            using (Image img2 = ImageHelpers.ResizeImageByPercentage(img, perc))
-                            {
-                                img2.SaveJPG(filePath, settings.PhotoQuality);
-                                Console.WriteLine("Resized {0} on thread {1}", Path.GetFileName(filePath), Thread.CurrentThread.ManagedThreadId);
-                            }
+                            perc = (float)settings.MaximumPixels / img.Height * 100;
                         }
+                        else
+                        {
+                            return;
+                        }
+
+                        using (Image img2 = ImageHelpers.ResizeImageByPercentage(img, perc))
+                        {
+                            img2.SaveJPG(filePath, settings.PhotoQuality);
+                            Console.WriteLine("Resized {0} on thread {1}", Path.GetFileName(filePath), Thread.CurrentThread.ManagedThreadId);
+                        }
+                    }
+
+                    lock (progressLock)
+                    {
+                        current++;
+                        OnProgressChanged(current, max);
                     }
                 }
                 catch (Exception ex)
@@ -107,9 +138,6 @@ namespace GPAR
                     Console.WriteLine(ex.Message);
                 }
             });
-
-            if (settings.IncludeSubfolders)
-                Directory.GetDirectories(folderPath).ForEach(ResizePhotosInFolder);
         }
     }
 }
