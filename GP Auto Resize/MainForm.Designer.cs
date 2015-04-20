@@ -48,10 +48,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pgApp.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.pgApp.Location = new System.Drawing.Point(0, 40);
+            this.pgApp.Location = new System.Drawing.Point(8, 40);
             this.pgApp.Name = "pgApp";
             this.pgApp.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.pgApp.Size = new System.Drawing.Size(601, 353);
+            this.pgApp.Size = new System.Drawing.Size(584, 344);
             this.pgApp.TabIndex = 0;
             this.pgApp.ToolbarVisible = false;
             // 
@@ -59,7 +59,7 @@
             // 
             this.btnStart.Location = new System.Drawing.Point(8, 8);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(75, 23);
+            this.btnStart.Size = new System.Drawing.Size(75, 24);
             this.btnStart.TabIndex = 1;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = true;

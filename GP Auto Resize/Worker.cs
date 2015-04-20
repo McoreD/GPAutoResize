@@ -47,7 +47,7 @@ namespace GPAR
         public event ProgressEventHandler ProgressChanged;
 
         private readonly Settings settings = Program.Settings;
-        private object progressLock = new object();
+        private readonly object progressLock = new object();
 
         public void Start()
         {
@@ -55,21 +55,26 @@ namespace GPAR
 
             IsWorking = true;
 
-            if (!Directory.Exists(settings.PhotosLocation))
+            try
             {
-                MessageBox.Show("Photos location is not configured.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                if (!Directory.Exists(settings.PhotosLocation))
+                {
+                    MessageBox.Show("Photos location is not configured.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
-            if (settings.BackupOriginalFiles && !Directory.Exists(settings.BackupLocation))
+                if (settings.BackupOriginalFiles && !Directory.Exists(settings.BackupLocation))
+                {
+                    MessageBox.Show("Backup location is not configured.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                ResizePhotosInFolder(settings.PhotosLocation);
+            }
+            finally
             {
-                MessageBox.Show("Backup location is not configured.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                IsWorking = false;
             }
-
-            ResizePhotosInFolder(settings.PhotosLocation);
-
-            IsWorking = false;
         }
 
         protected void OnProgressChanged(int current, int max)
