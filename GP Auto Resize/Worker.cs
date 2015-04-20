@@ -31,6 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -85,7 +86,7 @@ namespace GPAR
 
             SearchOption searchOption = settings.IncludeSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
 
-            settings.ImageExtensions.ForEach(ext => files.AddRange(Directory.GetFiles(folderPath, "*." + ext, searchOption)));
+            settings.ImageExtensions.ForEach(ext => files.AddRange(Directory.GetFiles(folderPath, "*." + ext, searchOption).Where(x => !x.Contains(settings.ExcludeFilesWithWord))));
 
             int current = 0;
             int max = files.Count;
