@@ -64,7 +64,12 @@ namespace GPAR
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            Task.Run(() => worker.Start());
+            btnStart.Enabled = false;
+
+            Task.Run(() => worker.Start()).ContinueWith(x =>
+            {
+                btnStart.Enabled = true;
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
     }
 }

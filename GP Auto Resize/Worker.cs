@@ -137,16 +137,18 @@ namespace GPAR
                             Console.WriteLine("Resized {0} on thread {1}", Path.GetFileName(filePath), Thread.CurrentThread.ManagedThreadId);
                         }
                     }
-
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                finally
+                {
                     lock (progressLock)
                     {
                         current++;
                         OnProgressChanged(current, max);
                     }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
                 }
             });
         }
