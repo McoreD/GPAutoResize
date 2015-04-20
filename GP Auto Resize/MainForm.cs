@@ -28,6 +28,7 @@
 
 using ShareX.HelpersLib;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GPAR
@@ -63,7 +64,7 @@ namespace GPAR
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            worker.Start();
+            Task.Run(() => worker.Start());
         }
     }
 }
