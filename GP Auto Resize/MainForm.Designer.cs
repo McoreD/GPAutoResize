@@ -32,6 +32,7 @@
             this.pgApp = new System.Windows.Forms.PropertyGrid();
             this.btnStart = new System.Windows.Forms.Button();
             this.pbProgress = new System.Windows.Forms.ProgressBar();
+            this.lblProgress = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher)).BeginInit();
             this.SuspendLayout();
             // 
@@ -71,14 +72,24 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pbProgress.Location = new System.Drawing.Point(88, 8);
             this.pbProgress.Name = "pbProgress";
-            this.pbProgress.Size = new System.Drawing.Size(504, 24);
+            this.pbProgress.Size = new System.Drawing.Size(408, 24);
             this.pbProgress.TabIndex = 2;
+            // 
+            // lblProgress
+            // 
+            this.lblProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblProgress.AutoSize = true;
+            this.lblProgress.Location = new System.Drawing.Point(504, 14);
+            this.lblProgress.Name = "lblProgress";
+            this.lblProgress.Size = new System.Drawing.Size(0, 13);
+            this.lblProgress.TabIndex = 3;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(601, 393);
+            this.Controls.Add(this.lblProgress);
             this.Controls.Add(this.pbProgress);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.pgApp);
@@ -87,6 +98,7 @@
             this.Text = "Google+ Auto Resize";
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -96,6 +108,7 @@
         private System.Windows.Forms.PropertyGrid pgApp;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.ProgressBar pbProgress;
+        private System.Windows.Forms.Label lblProgress;
 
     }
 }

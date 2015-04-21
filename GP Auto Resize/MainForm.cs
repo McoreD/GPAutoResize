@@ -59,6 +59,7 @@ namespace GPAR
             {
                 pbProgress.Maximum = max;
                 pbProgress.Value = current;
+                lblProgress.Text = string.Format("{0} / {1}", current, max);
             });
         }
 

@@ -41,6 +41,7 @@ namespace GPAR
     public class Worker
     {
         public bool IsWorking { get; private set; }
+        public List<string> FailedFiles { get; private set; }
 
         public delegate void ProgressEventHandler(int current, int max);
 
@@ -54,6 +55,7 @@ namespace GPAR
             if (IsWorking) return;
 
             IsWorking = true;
+            FailedFiles = new List<string>();
 
             try
             {
@@ -76,6 +78,12 @@ namespace GPAR
                 }
 
                 ResizePhotosInFolder(settings.PhotosLocation);
+
+                if (FailedFiles.Count > 0)
+                {
+                    DebugHelper.WriteLine("Failed image files:\r\n" + string.Join("\r\n", FailedFiles));
+                    //ResizePhotos(FailedFiles);
+                }
             }
             finally
             {
@@ -104,8 +112,16 @@ namespace GPAR
                 files = files.Where(x => !x.Contains(settings.ExcludeFilesWithWord)).ToList();
             }
 
+            if (files.Count > 0)
+            {
+                ResizePhotos(files);
+            }
+        }
+
+        private void ResizePhotos(IEnumerable<string> files)
+        {
             int current = 0;
-            int max = files.Count;
+            int max = files.Count();
 
             OnProgressChanged(current, max);
 
@@ -116,6 +132,7 @@ namespace GPAR
                     using (Image img = Image.FromFile(filePath))
                     {
                         bool resizePending = img.Width > settings.MaximumPixels || img.Height > settings.MaximumPixels;
+
                         if (resizePending)
                         {
                             if (settings.BackupOriginalFiles)
@@ -135,6 +152,7 @@ namespace GPAR
                 }
                 catch (Exception ex)
                 {
+                    FailedFiles.Add(filePath);
                     DebugHelper.WriteException(ex, "Try reducing MaxDegreeOfParallelism");
                 }
                 finally
