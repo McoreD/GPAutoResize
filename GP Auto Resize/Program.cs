@@ -35,10 +35,9 @@ namespace GPAR
 {
     public static class Program
     {
-        public static readonly string LogFilePath = Path.Combine(Path.GetDirectoryName(Application.StartupPath), string.Format("{0}-{1}-debug.log", Application.ProductName, DateTime.Now.ToString("yyyyMMdd")));
-
         public static Settings Settings = new Settings();
 
+        public static readonly string LogFilePath = string.Format("{0}-{1}-debug.log", Application.ProductName, DateTime.Now.ToString("yyyyMMdd"));
         private static string SettingsPath = "Settings.json";
 
         /// <summary>
