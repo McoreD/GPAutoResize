@@ -82,7 +82,7 @@ namespace GPAR
                 if (FailedFiles.Count > 0)
                 {
                     DebugHelper.WriteLine("Failed image files:\r\n" + string.Join("\r\n", FailedFiles));
-                    //ResizePhotos(FailedFiles);
+                    ResizePhotos(FailedFiles);
                 }
             }
             finally
@@ -153,7 +153,6 @@ namespace GPAR
                 catch (Exception ex)
                 {
                     FailedFiles.Add(filePath);
-                    DebugHelper.WriteException(ex, "Try reducing MaxDegreeOfParallelism");
                 }
                 finally
                 {
@@ -164,6 +163,9 @@ namespace GPAR
                     }
                 }
             });
+
+            if (FailedFiles.Count > 0)
+                DebugHelper.WriteLine("Try reducing MaxDegreeOfParallelism");
         }
     }
 }
