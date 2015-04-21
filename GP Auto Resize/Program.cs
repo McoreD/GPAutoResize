@@ -26,13 +26,17 @@
 
 #endregion License Information (GPL v3)
 
+using ShareX.HelpersLib;
 using System;
+using System.IO;
 using System.Windows.Forms;
 
 namespace GPAR
 {
     public static class Program
     {
+        public static readonly string LogFilePath = Path.Combine(Path.GetDirectoryName(Application.StartupPath), string.Format("{0}-{1}-debug.log", Application.ProductName, DateTime.Now.ToString("yyyyMMdd")));
+
         public static Settings Settings = new Settings();
 
         private static string SettingsPath = "Settings.json";
@@ -48,6 +52,7 @@ namespace GPAR
             Settings = Settings.Load(SettingsPath);
             Application.Run(new MainForm());
             Settings.Save(SettingsPath);
+            DebugHelper.Logger.SaveLog(LogFilePath);
         }
     }
 }

@@ -69,6 +69,12 @@ namespace GPAR
                     return;
                 }
 
+                if (settings.MaximumPixels == 0)
+                {
+                    MessageBox.Show("Maximum number of pixels is not configured.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 ResizePhotosInFolder(settings.PhotosLocation);
             }
             finally
@@ -122,15 +128,12 @@ namespace GPAR
                             using (Image img2 = ImageHelpers.ResizeImageLimit(img, settings.MaximumPixels))
                             {
                                 img2.SaveJPG(filePath, settings.PhotoQuality);
-                                Console.WriteLine("Resized {0} on thread {1}", Path.GetFileName(filePath), Thread.CurrentThread.ManagedThreadId);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
-                    Console.WriteLine(ex.Message);
                 }
                 finally
                 {
