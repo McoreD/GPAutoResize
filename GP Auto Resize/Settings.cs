@@ -60,8 +60,11 @@ namespace GPAR
         [Editor(typeof(DirectoryNameEditor), typeof(UITypeEditor))]
         public string BackupLocation { get; set; }
 
-        [Category("Settings"), DefaultValue(99), Description("Image quality")]
+        [Category("Settings"), DefaultValue(95), Description("Image quality")]
         public int PhotoQuality { get; set; }
+
+        [Category("Settings"), DefaultValue(4), Description("Maximum number of concurrent operations")]
+        public int MaxDegreeOfParallelism { get; set; }
 
         public Settings()
         {

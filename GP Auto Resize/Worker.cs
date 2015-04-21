@@ -103,7 +103,7 @@ namespace GPAR
 
             OnProgressChanged(current, max);
 
-            Parallel.ForEach(files, filePath =>
+            Parallel.ForEach(files, new ParallelOptions { MaxDegreeOfParallelism = settings.MaxDegreeOfParallelism }, filePath =>
             {
                 try
                 {
@@ -129,6 +129,7 @@ namespace GPAR
                 }
                 catch (Exception ex)
                 {
+                    MessageBox.Show(ex.Message);
                     Console.WriteLine(ex.Message);
                 }
                 finally
