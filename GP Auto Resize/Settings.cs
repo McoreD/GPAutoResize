@@ -48,6 +48,10 @@ namespace GPAR
         [Category("Settings"), DefaultValue(2048), Description("Maximum pixels in the resized photo in width or height")]
         public int MaximumPixels { get; set; }
 
+        [Category("Settings"), Description("Location of the photos folder")]
+        [Editor(typeof(DirectoryNameEditor), typeof(UITypeEditor))]
+        public string PhotosLocation { get; set; }
+
         [Category("Settings"), DefaultValue(true), Description("Move original files to the backup location.")]
         [Editor(typeof(DirectoryNameEditor), typeof(UITypeEditor))]
         public bool BackupOriginalFiles { get; set; }
@@ -55,10 +59,6 @@ namespace GPAR
         [Category("Settings"), Description("Location of the backup folder for original files")]
         [Editor(typeof(DirectoryNameEditor), typeof(UITypeEditor))]
         public string BackupLocation { get; set; }
-
-        [Category("Settings"), Description("Location of the photos folder")]
-        [Editor(typeof(DirectoryNameEditor), typeof(UITypeEditor))]
-        public string PhotosLocation { get; set; }
 
         [Category("Settings"), DefaultValue(99), Description("Image quality")]
         public int PhotoQuality { get; set; }

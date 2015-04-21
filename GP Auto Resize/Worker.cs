@@ -109,32 +109,21 @@ namespace GPAR
                 {
                     using (Image img = Image.FromFile(filePath))
                     {
-                        if ((img.Width > settings.MaximumPixels || img.Height > settings.MaximumPixels) && settings.BackupOriginalFiles)
+                        bool resizePending = img.Width > settings.MaximumPixels || img.Height > settings.MaximumPixels;
+                        if (resizePending)
                         {
-                            string newPath = filePath.Replace(settings.PhotosLocation, settings.BackupLocation);
-                            Helpers.CreateDirectoryIfNotExist(newPath);
-                            if (!File.Exists(newPath)) File.Copy(filePath, newPath);
-                        }
+                            if (settings.BackupOriginalFiles)
+                            {
+                                string newPath = filePath.Replace(settings.PhotosLocation, settings.BackupLocation);
+                                Helpers.CreateDirectoryIfNotExist(newPath);
+                                if (!File.Exists(newPath)) File.Copy(filePath, newPath);
+                            }
 
-                        float perc;
-
-                        if (img.Width > img.Height && img.Width > settings.MaximumPixels)
-                        {
-                            perc = (float)settings.MaximumPixels / img.Width * 100;
-                        }
-                        else if (img.Height > settings.MaximumPixels)
-                        {
-                            perc = (float)settings.MaximumPixels / img.Height * 100;
-                        }
-                        else
-                        {
-                            return;
-                        }
-
-                        using (Image img2 = ImageHelpers.ResizeImageByPercentage(img, perc))
-                        {
-                            img2.SaveJPG(filePath, settings.PhotoQuality);
-                            Console.WriteLine("Resized {0} on thread {1}", Path.GetFileName(filePath), Thread.CurrentThread.ManagedThreadId);
+                            using (Image img2 = ImageHelpers.ResizeImageLimit(img, settings.MaximumPixels))
+                            {
+                                img2.SaveJPG(filePath, settings.PhotoQuality);
+                                Console.WriteLine("Resized {0} on thread {1}", Path.GetFileName(filePath), Thread.CurrentThread.ManagedThreadId);
+                            }
                         }
                     }
                 }
