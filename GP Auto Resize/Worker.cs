@@ -128,6 +128,7 @@ namespace GPAR
                             using (Image img2 = ImageHelpers.ResizeImageLimit(img, settings.MaximumPixels))
                             {
                                 img2.SaveJPG(filePath, settings.PhotoQuality);
+                                DebugHelper.WriteLine("Resized {0} to {1}x{2} on thread {3}", Path.GetFileName(filePath), img2.Width, img.Height, Thread.CurrentThread.ManagedThreadId.ToString("D4"));
                             }
                         }
                     }
