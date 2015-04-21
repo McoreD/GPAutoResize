@@ -134,6 +134,7 @@ namespace GPAR
                 }
                 catch (Exception ex)
                 {
+                    DebugHelper.WriteException(ex, "Try reducing MaxDegreeOfParallelism.");
                 }
                 finally
                 {
