@@ -45,8 +45,8 @@ namespace GPAR
         [Editor("System.Windows.Forms.Design.StringCollectionEditor,System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
         public List<string> ImageExtensions { get; set; }
 
-        [Category("Settings"), DefaultValue(2048), Description("Maximum pixels in the resized photo in width or height")]
-        public int MaximumPixels { get; set; }
+        [Category("Settings"), DefaultValue(16000000), Description("Maximum pixels in the resized photo e.g. 16 MP is 16000000")]
+        public int MaxPixels { get; set; }
 
         [Category("Settings"), Description("Location of the photos folder")]
         [Editor(typeof(DirectoryNameEditor), typeof(UITypeEditor))]

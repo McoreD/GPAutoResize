@@ -71,7 +71,7 @@ namespace GPAR
                     return;
                 }
 
-                if (settings.MaximumPixels == 0)
+                if (settings.MaxPixels == 0)
                 {
                     MessageBox.Show("Maximum number of pixels is not configured.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -131,7 +131,7 @@ namespace GPAR
                 {
                     using (Image img = Image.FromFile(filePath))
                     {
-                        bool resizePending = img.Width > settings.MaximumPixels || img.Height > settings.MaximumPixels;
+                        bool resizePending = img.Width * img.Height > settings.MaxPixels;
 
                         if (resizePending)
                         {
@@ -142,7 +142,7 @@ namespace GPAR
                                 if (!File.Exists(newPath)) File.Copy(filePath, newPath);
                             }
 
-                            using (Image img2 = ImageHelpers.ResizeImageLimit(img, settings.MaximumPixels))
+                            using (Image img2 = ImageHelpers.ResizeImageLimit(img, settings.MaxPixels))
                             {
                                 DebugHelper.WriteLine("Resized {0} to {1}x{2} on thread {3}", Path.GetFileName(filePath), img2.Width, img2.Height, Thread.CurrentThread.ManagedThreadId.ToString("D4"));
                                 img2.SaveJPG(filePath, settings.PhotoQuality);
