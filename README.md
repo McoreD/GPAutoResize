@@ -2,7 +2,9 @@
 [![](https://lh5.googleusercontent.com/-SxwcJsu66Ok/VTPChfmdvZI/AAAAAAACkjk/YSw09OcPnag/w603-h425-no/GPAR-Google%2B_Auto_Resize_2015-04-19_22-58-08.png)](https://getsharex.com)
 
 Notes:
-2015-09-15 I have received the following email regarding dmdifying photos in Google Photos folder in Google Drive.
+
+2015-09-15 
+This application may not achieve what you are ultimately after. I have received the following email regarding modifying photos in Google Photos folder in Google Drive:
 
 Thank you for contacting the Google Drive Support Team!
 
